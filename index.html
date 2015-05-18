@@ -12,65 +12,6 @@
     var socket = io.connect('http://192.168.1.101:8080');
     var play = null;
     socket.on('server-ready', function (data) {
-      // function initAudio() {
-      //   var audio = new Audio('music/rider-in-red.mp3');
-      //   var deltaTime = 0;
-      //   audio.addEventListener('play', function () {
-      //     console.log("Done loading.");
-      //     console.log(deltaTime);
-      //     console.log(audio.start, audio.play, audio.pause, audio.stop);
-      //     // When the audio is ready to play, immediately pause.
-      //     audio.pause();
-
-      //     audio.removeEventListener('play', arguments.callee, false);
-      //     var play = function() {
-      //       console.log("button was pressed");
-      //       document.getElementById("play-button").removeEventListener("click", play);
-      //       var timestamp = Date.now() + 2000;
-      //       socket.emit("play", timestamp);
-      //       setTimeout(function() {
-      //         audio.play();
-              // var div = document.createElement("div");
-              // div.textContent = timestamp + " | " + (Date.now() - timestamp);
-              // document.body.appendChild(div);
-      //         console.log("offset -> ",timestamp - Date.now());
-      //       }, timestamp - Date.now() - deltaTime);
-      //       // while(Date.now() - timestamp < 0);
-      //       // audio.play();
-      //       // console.log("offset -> ",timestamp - Date.now());
-      //     };
-
-      //     socket.on("play", function(timestamp) {
-      //       console.log("receive event from server ->",timestamp, Date.now() - timestamp);
-
-      //       setTimeout(function() {
-      //         audio.play();
-      //         var div = document.createElement("div");
-      //         div.textContent = timestamp + " | " + (Date.now() - timestamp);
-      //         document.body.appendChild(div);
-      //         console.log("offset -> ",timestamp - Date.now());
-      //       }, timestamp - Date.now() - deltaTime);
-
-      //       // while(Date.now() - timestamp < 0);
-      //       // audio.play();
-      //       // console.log("offset -> ",timestamp - Date.now());
-      //     });
-          // document.getElementById("play-button").textContent = "Play";
-      //     document.getElementById("play-button").addEventListener('click', play, false);
-      //     // document.getElementById("play-button").addEventListener('touchstart', play, false);
-      //     // document.getElementById("play-button").addEventListener('mousedown', play, false);
-      //   }, false);
-        // document.addEventListener('click', function () {
-        //   // Start playing audio when the user clicks anywhere on the page,
-        //   // to force Mobile Safari to load the audio.
-        //   document.removeEventListener('click', arguments.callee, false);
-        //   var prevTime = Date.now();
-        //   audio.play();
-        //   deltaTime = Date.now() - prevTime;
-        // }, false);
-      // }
-      // initAudio();
-
       var music = new WebAudioAPISound("music/rider-in-red", function() {
         console.log("Done loading.");
 
@@ -108,44 +49,6 @@
       });
 
     });
-
-    // function blabla(buffer) {
-    //   return function(e){
-    //     document.body.removeEventListener('touchstart', blabla(buffer));
-    //     document.body.removeEventListener('mousedown', blabla(buffer));
-
-        // document.getElementById("play-button").disabled = false;
-
-
-
-    //     socket.on("play", function(data) {
-    //       console.log(data, Date.now() - data);
-          // setTimeout(function() {
-          //   playSound(buffer);
-          // }, data - Date.now());
-    //     });
-    //   };
-    // }
-
-    // function unlock() {
-    //   // create empty buffer and play it
-    //   var buffer = context.createBuffer(1, 1, 22050);
-    //   var source = context.createBufferSource();
-    //   source.buffer = buffer;
-    //   source.connect(context.destination);
-    //   source.noteOn(0);
-
-    //   // by checking the play state after some time, we know if we're really unlocked
-    //   setTimeout(function() {
-    //     console.log(source.playbackState, source);
-    //     if((source.playbackState === source.PLAYING_STATE || source.playbackState === source.FINISHED_STATE)) {
-    //       play();
-    //     } else {
-    //       console.log("Not unlocked");
-    //     }
-    //   }, 0);
-
-    // }
   </script>
 </body>
 </html>
