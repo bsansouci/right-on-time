@@ -6,47 +6,95 @@
   <script type="text/javascript" src="./client.js"></script>
 </head>
 <body style="width: 1000px;height:1000px;position: absolute;">
-<button id="play-button" disabled>Load!</button>
+<button id="play-button">Load Skrillex plz!</button>
 
 <script>
-    var socket = io.connect('http://192.168.1.101:8080');
-    var play = null;
+    var socket = io.connect('http://localhost:8080/');
+
+    var arrayOfSlices = [];
+    var song = null;
+    var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     socket.on('server-ready', function (data) {
-      var music = new WebAudioAPISound("music/rider-in-red", function() {
-        console.log("Done loading.");
+      socket.on("track-buffer-data", function(data) {
+        arrayOfSlices.push(data.buffer);
+        console.log("received", data);
+      });
+      socket.on("track-buffer-data-end", function() {
+        var totalLength = arrayOfSlices.reduce(function(acc, v) {
+          return acc + v.byteLength;
+        }, 0);
+        console.log(totalLength);
+        var track = new Uint8Array(totalLength);
 
-        document.getElementById("play-button").disabled = false;
-        document.getElementById("play-button").addEventListener('click', function () {
-          document.getElementById("play-button").textContent = "Play";
-          // Start playing audio when the user clicks anywhere on the page,
-          // to force Mobile Safari to load the audio.
-          document.getElementById("play-button").removeEventListener('click', arguments.callee, false);
+        var acc = 0;
+        for (var i = 0; i < arrayOfSlices.length; i++) {
+          track.set(new Uint8Array(arrayOfSlices[i]), acc);
+          acc += arrayOfSlices[i].byteLength;
+        }
 
-          music.play(0);
-          music.stop(0);
+        song = audioCtx.createBufferSource();
+        audioCtx.decodeAudioData(track.buffer, function(buffer) {
+          song.buffer = buffer;
+          song.connect(audioCtx.destination);
+        }, function(e) {
+          console.error(e);
+        });
 
-          var play = function() {
-            var timestamp = Date.now() + 2000;
-            socket.emit("play", timestamp);
-            music.play(timestamp - Date.now());
-            var div = document.createElement("div");
-            div.textContent = timestamp + " | " + (timestamp - Date.now());
-            document.body.appendChild(div);
-          };
-
-          socket.on("play", function(timestamp) {
-            console.log(timestamp, Date.now() - timestamp);
-
-            music.play(timestamp - Date.now());
-            var div = document.createElement("div");
-            div.textContent = timestamp + " | " + (timestamp - Date.now());
-            document.body.appendChild(div);
-          });
-
-          document.getElementById("play-button").addEventListener('click', play, false);
-        }, false);
+        console.log("end ->",track);
+        document.getElementById("play-button").textContent = "Play";
+        var playing = false;
+        document.getElementById("play-button").addEventListener("click", function() {
+          if(playing) {
+            song.stop(0);
+            document.getElementById("play-button").textContent = "Play";
+          } else {
+            song.start(0);
+            document.getElementById("play-button").textContent = "Stop (can't restart afterwards)";
+          }
+          playing = !playing;
+        });
 
       });
+
+      document.getElementById("play-button").addEventListener("click", function() {
+        socket.emit("play", 45719017);
+        document.getElementById("play-button").removeEventListener('click', arguments.callee, false);
+      });
+      // var music = new WebAudioAPISound("music/rider-in-red", function() {
+      //   console.log("Done loading.");
+
+      //   document.getElementById("play-button").disabled = false;
+      //   document.getElementById("play-button").addEventListener('click', function () {
+      //     document.getElementById("play-button").textContent = "Play";
+      //     // Start playing audio when the user clicks anywhere on the page,
+      //     // to force Mobile Safari to load the audio.
+      //     document.getElementById("play-button").removeEventListener('click', arguments.callee, false);
+
+      //     music.play(0);
+      //     music.stop(0);
+
+      //     var play = function() {
+      //       var timestamp = Date.now() + 2000;
+      //       socket.emit("play", timestamp);
+      //       music.play(timestamp - Date.now());
+      //       var div = document.createElement("div");
+      //       div.textContent = timestamp + " | " + (timestamp - Date.now());
+      //       document.body.appendChild(div);
+      //     };
+
+      //     socket.on("play", function(timestamp) {
+      //       console.log(timestamp, Date.now() - timestamp);
+
+      //       music.play(timestamp - Date.now());
+      //       var div = document.createElement("div");
+      //       div.textContent = timestamp + " | " + (timestamp - Date.now());
+      //       document.body.appendChild(div);
+      //     });
+
+      //     document.getElementById("play-button").addEventListener('click', play, false);
+      //   }, false);
+
+      // });
 
     });
   </script>

@@ -70,6 +70,5 @@ module.exports = function(trackID, socket) {
     .on("end", function() {
       socket.emit("track-buffer-data-end", {track: trackID});
     });
-
   });
 };
