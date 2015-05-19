@@ -63,12 +63,25 @@ module.exports = function(trackID, socket) {
   }, function(err, res, html) {
     var data = JSON.parse(html);
 
+    var arrayOfSlices = [];
     request(data.http_mp3_128_url)
     .on("data", function(data) {
-      socket.emit("track-buffer-data", {track: trackID, buffer: data});
+      arrayOfSlices.push(data);
     })
     .on("end", function() {
-      socket.emit("track-buffer-data-end", {track: trackID});
+      var totalLength = arrayOfSlices.reduce(function(acc, v) {
+        return acc + v.length;
+      }, 0);
+      var track = new Uint8Array(totalLength);
+      var acc = 0;
+      for (var i = 0; i < arrayOfSlices.length; i++) {
+        track.set(new Uint8Array(arrayOfSlices[i]), acc);
+        acc += arrayOfSlices[i].length;
+      }
+      socket.emit("track-buffer-data-end", {track: trackID, buffer: track.buffer});
+      // setTimeout(function() {
+      //   socket.emit("track-buffer-data-end", {track: trackID});
+      // }, 200);
     });
   });
 };

@@ -14,9 +14,11 @@ app.get('/', function (req, res) {
 io.on('connection', function (socket) {
   console.log("new socket connection");
   socket.emit('server-ready');
-  socket.on('play', function (data) {
+  socket.on('load-track', function (data) {
     console.log("Requesting track", data);
     soundcloud(data, socket);
-    // socket.broadcast.emit("play", data);
+  });
+  socket.on('play', function(data) {
+    socket.broadcast.emit("play", data);
   });
 });
