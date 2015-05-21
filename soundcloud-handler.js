@@ -78,7 +78,7 @@ module.exports = function(trackID, socket) {
         track.set(new Uint8Array(arrayOfSlices[i]), acc);
         acc += arrayOfSlices[i].length;
       }
-      socket.emit("track-buffer-data-end", {track: trackID, buffer: track.buffer});
+      socket.emit("track-buffer-data-end", {id: trackID, buffer: track.buffer});
       // setTimeout(function() {
       //   socket.emit("track-buffer-data-end", {track: trackID});
       // }, 200);

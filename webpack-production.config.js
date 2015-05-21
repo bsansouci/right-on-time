@@ -2,6 +2,7 @@ var path = require('path');
 var webpack = require('webpack');
 
 module.exports = {
+  debug: true,
   entry: './scripts/index',
   output: {
     path: path.join(__dirname, 'build'),
