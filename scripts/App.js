@@ -1,4 +1,7 @@
 import React from 'react';
+import {partial} from './helper-functions';
+import Search from './Search';
+import Player from './Player';
 
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 SC.initialize({
@@ -8,15 +11,6 @@ React.initializeTouchEvents(true);
 const firebase = new Firebase("https://right-on-time.firebaseio.com/");
 const roomName = "room1";
 const db = firebase.child(roomName);
-
-const Player = require("./Player");
-
-function partial(f) {
-  const args = Array.prototype.slice.call(arguments, 1);
-  return function() {
-    return f.apply(null, args.concat(Array.prototype.slice.call(arguments, 0)));
-  };
-}
 
 class App extends React.Component {
   constructor(props) {
@@ -114,56 +108,6 @@ class App extends React.Component {
         <div style={{width: "50%", float: "right"}}>
           Playlist: <br />
           {playlist}
-        </div>
-      </div>
-    );
-  }
-}
-
-class Search extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      searchRes: [],
-      lastSearch: 0,
-      searchQuery: ""
-    };
-    this.onChange = this.onChange.bind(this);
-  }
-
-  onChange(e) {
-    this.setState({
-      lastSearch: Date.now(),
-      searchQuery: e.target.value
-    });
-    SC.get('/tracks', { q: e.target.value }, (tracks) => {
-      this.setState({
-        searchRes: tracks
-      });
-    });
-  }
-
-  render() {
-    let searchResStyle = {
-      padding: 10,
-      margin: 10,
-      border: "1px solid black",
-      borderRadius: 5
-    };
-
-    let searchRes = this.state.searchRes.map((x) => {
-      return <div key={x.id} style={searchResStyle} onTouchStart={partial(this.props.addToPlaylist, x)} onClick={partial(this.props.addToPlaylist, x)}>{x.title}</div>;
-    });
-
-    return (
-      <div>
-        <input type="text" onChange={this.onChange} style={{fontSize: 24, position: "relative", top: 3}} />
-        <br /><br />
-        <div style={{width: 800}}>
-          <div style={{float: "left", maxHeight: 300, width: "50%", "overflow": "scroll"}}>
-            Search results: <br />
-            {searchRes}
-          </div>
         </div>
       </div>
     );
