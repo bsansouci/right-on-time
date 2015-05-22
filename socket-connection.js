@@ -15,5 +15,8 @@ module.exports = function(server) {
     socket.on('play', function() {
       io.to('room').emit('play-now');
     });
+    socket.on('next', function() {
+      io.to('room').emit('next-song');
+    });
   });
 };

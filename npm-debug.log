@@ -1,25 +1,36 @@
 0 info it worked if it ends with ok
-1 verbose cli [ 'node', '/usr/local/bin/npm', 'run', 'build' ]
+1 verbose cli [ 'node', '/usr/local/bin/npm', 'start' ]
 2 info using npm@2.7.3
 3 info using node@v0.12.1
 4 verbose node symlink /usr/local/bin/node
-5 verbose stack Error: missing script: build
-5 verbose stack     at run (/usr/local/lib/node_modules/npm/lib/run-script.js:165:19)
-5 verbose stack     at /usr/local/lib/node_modules/npm/lib/run-script.js:81:5
-5 verbose stack     at /usr/local/lib/node_modules/npm/node_modules/read-package-json/read-json.js:52:40
-5 verbose stack     at /usr/local/lib/node_modules/npm/node_modules/read-package-json/read-json.js:376:33
-5 verbose stack     at checkBinReferences_ (/usr/local/lib/node_modules/npm/node_modules/read-package-json/read-json.js:341:59)
-5 verbose stack     at final (/usr/local/lib/node_modules/npm/node_modules/read-package-json/read-json.js:373:17)
-5 verbose stack     at then (/usr/local/lib/node_modules/npm/node_modules/read-package-json/read-json.js:127:33)
-5 verbose stack     at /usr/local/lib/node_modules/npm/node_modules/read-package-json/read-json.js:332:40
-5 verbose stack     at evalmachine.<anonymous>:336:14
-5 verbose stack     at /usr/local/lib/node_modules/npm/node_modules/graceful-fs/graceful-fs.js:102:5
-6 verbose cwd /Users/benjamin/Desktop/right-on-time
-7 error Darwin 14.3.0
-8 error argv "node" "/usr/local/bin/npm" "run" "build"
-9 error node v0.12.1
-10 error npm  v2.7.3
-11 error missing script: build
-12 error If you need help, you may report this error at:
-12 error     <https://github.com/npm/npm/issues>
-13 verbose exit [ 1, true ]
+5 verbose run-script [ 'prestart', 'start', 'poststart' ]
+6 info prestart right-on-time@1.0.0
+7 info start right-on-time@1.0.0
+8 verbose unsafe-perm in lifecycle true
+9 info right-on-time@1.0.0 Failed to exec start script
+10 verbose stack Error: right-on-time@1.0.0 start: `webpack --config webpack-production.config.js --progress --profile --colors && node server.js`
+10 verbose stack Exit status 1
+10 verbose stack     at EventEmitter.<anonymous> (/usr/local/lib/node_modules/npm/lib/utils/lifecycle.js:213:16)
+10 verbose stack     at EventEmitter.emit (events.js:110:17)
+10 verbose stack     at ChildProcess.<anonymous> (/usr/local/lib/node_modules/npm/lib/utils/spawn.js:14:12)
+10 verbose stack     at ChildProcess.emit (events.js:110:17)
+10 verbose stack     at maybeClose (child_process.js:1008:16)
+10 verbose stack     at Process.ChildProcess._handle.onexit (child_process.js:1080:5)
+11 verbose pkgid right-on-time@1.0.0
+12 verbose cwd /Users/benjamin/Desktop/right-on-time
+13 error Darwin 14.3.0
+14 error argv "node" "/usr/local/bin/npm" "start"
+15 error node v0.12.1
+16 error npm  v2.7.3
+17 error code ELIFECYCLE
+18 error right-on-time@1.0.0 start: `webpack --config webpack-production.config.js --progress --profile --colors && node server.js`
+18 error Exit status 1
+19 error Failed at the right-on-time@1.0.0 start script 'webpack --config webpack-production.config.js --progress --profile --colors && node server.js'.
+19 error This is most likely a problem with the right-on-time package,
+19 error not with npm itself.
+19 error Tell the author that this fails on your system:
+19 error     webpack --config webpack-production.config.js --progress --profile --colors && node server.js
+19 error You can get their info via:
+19 error     npm owner ls right-on-time
+19 error There is likely additional logging output above.
+20 verbose exit [ 1, true ]

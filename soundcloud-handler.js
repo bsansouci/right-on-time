@@ -56,19 +56,43 @@ function _post(url, jar, form, callback) {
 }
 
 var jar = request.jar();
+var cache = {};
 module.exports = function(trackID, socket) {
+  if(trackID in cache && cache[trackID].state === "ready") {
+    console.log("Using cached version of", trackID);
+    return socket.emit("track-buffer-data-end", cache[trackID]);
+  }
+  if(trackID in cache && cache[trackID].state === "fetching") {
+    console.log("Already fetching", trackID, "waiting until done...");
+    return cache[trackID].callbacks.push(socket);
+  }
+
   _get("https://api.soundcloud.com/i1/tracks/"+trackID+"/streams?", jar, {
     "client_id": "b45b1aa10f1ac2941910a7f0d10f8e28",
     "app_version": "9a98f21"
   }, function(err, res, html) {
+    if(trackID in cache && cache[trackID].state === "ready") {
+      console.log("Using cached version of", trackID);
+      return socket.emit("track-buffer-data-end", cache[trackID]);
+    }
+
     var data = JSON.parse(html);
 
     var arrayOfSlices = [];
+    cache[trackID] = {
+      state: "fetching",
+      callbacks: []
+    };
     request(data.http_mp3_128_url)
     .on("data", function(data) {
       arrayOfSlices.push(data);
     })
     .on("end", function() {
+      if(trackID in cache && cache[trackID].state === "ready") {
+        console.log("Using cached version of", trackID);
+        return socket.emit("track-buffer-data-end", cache[trackID]);
+      }
+
       var totalLength = arrayOfSlices.reduce(function(acc, v) {
         return acc + v.length;
       }, 0);
@@ -78,10 +102,14 @@ module.exports = function(trackID, socket) {
         track.set(new Uint8Array(arrayOfSlices[i]), acc);
         acc += arrayOfSlices[i].length;
       }
-      socket.emit("track-buffer-data-end", {id: trackID, buffer: track.buffer});
-      // setTimeout(function() {
-      //   socket.emit("track-buffer-data-end", {track: trackID});
-      // }, 200);
+
+      var newCacheObj = {state: "ready", id: trackID, buffer: track.buffer};
+      cache[trackID].callbacks.map(function(v) {
+        v.emit("track-buffer-data-end", newCacheObj);
+      });
+
+      socket.emit("track-buffer-data-end", newCacheObj);
+      cache[trackID] = newCacheObj;
     });
   });
 };
