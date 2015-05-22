@@ -86,16 +86,6 @@ class App extends React.Component {
   render() {
     if(!this.state.soundAvailable) return <button id="enable-sound-button">Enable sound</button>;
 
-    let playlistStyle = {
-      padding: 10,
-      margin: 10,
-      border: "1px solid black",
-      borderRadius: 5
-    };
-    let playlist = this.state.playlist.map((x) => {
-      return <div key={x.id} style={playlistStyle}>{x.title}<span onClick={partial(this.removeFromPlaylist, x.id)} style={{float:"right"}}>X</span></div>;
-    });
-
     return (
       <div>
         <Search playlist={this.state.playlist}
@@ -105,10 +95,6 @@ class App extends React.Component {
                 addToPlaylist={this.addToPlaylist}
                 removeFromPlaylist={this.removeFromPlaylist}
                 audioCtx={audioCtx} />
-        <div style={{width: "50%", float: "right"}}>
-          Playlist: <br />
-          {playlist}
-        </div>
       </div>
     );
   }
